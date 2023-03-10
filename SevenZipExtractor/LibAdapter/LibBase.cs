@@ -204,7 +204,7 @@ namespace SevenZipExtractor.LibAdapter {
             return obj;
         }
         public T? GetMethodPropertyOrDefault<T>([In] uint index, [In] NMethodPropID propID) {
-            PropVariant value = new PropVariant();
+            Variant value = new Variant();
             var result = _GetMethodProperty(index, propID, ref value);
             return result ==
                 HResults.S_OK &&
@@ -212,7 +212,7 @@ namespace SevenZipExtractor.LibAdapter {
                 ? (T?)value.Value : default;
         }
         public bool TryGetMethodProperty<T>([In] uint index, [In] NMethodPropID propID, out T? outValue) {
-            PropVariant value = new PropVariant();
+            Variant value = new Variant();
             try {
                 var result = _GetMethodProperty(index, propID, ref value);
                 if (result == HResults.S_OK &&
@@ -227,7 +227,7 @@ namespace SevenZipExtractor.LibAdapter {
             }
         }
         public object? GetMethodProperty([In] uint index, [In] NMethodPropID propID) {
-            PropVariant value = new PropVariant();
+            Variant value = new Variant();
             try {
                 var result = _GetMethodProperty(index, propID, ref value);
                 CheckResult(result, "Error getting property");
@@ -236,7 +236,7 @@ namespace SevenZipExtractor.LibAdapter {
                 value.Clear();
             }
         }
-        public int GetMethodProperty(uint index, NMethodPropID propID, ref PropVariant value) {
+        public int GetMethodProperty(uint index, NMethodPropID propID, ref Variant value) {
             return _GetMethodProperty(index, propID, ref value);
         }
 
@@ -306,7 +306,7 @@ namespace SevenZipExtractor.LibAdapter {
         }
 
         public uint NumStreams(uint index) {
-            PropVariant prop = new PropVariant();
+            Variant prop = new Variant();
             try {
                 if (GetMethodProperty(index, NMethodPropID.kPackStreams, ref prop) != HResults.S_OK)
                     return 0;
@@ -321,7 +321,7 @@ namespace SevenZipExtractor.LibAdapter {
         }
 
         public ulong GetCodecId(uint index) {
-            PropVariant prop = new PropVariant();
+            Variant prop = new Variant();
             try {
                 var hresult = GetMethodProperty(index, NMethodPropID.kID, ref prop);
                 if (hresult != HResults.S_OK) {
@@ -338,7 +338,7 @@ namespace SevenZipExtractor.LibAdapter {
         }
 
         public string GetCodecName(uint index) {
-            PropVariant prop = new PropVariant();
+            Variant prop = new Variant();
             try {
                 var hresult = GetMethodProperty(index, NMethodPropID.kName, ref prop);
                 if (hresult != HResults.S_OK) {
@@ -355,7 +355,7 @@ namespace SevenZipExtractor.LibAdapter {
         }
 
         public ulong GetHasherId(uint index) {
-            PropVariant prop = new PropVariant();
+            Variant prop = new Variant();
             try {
                 var hresult = Hashers.GetHasherProp(index, NMethodPropID.kID, ref prop);
                 if (hresult != HResults.S_OK) {
@@ -371,7 +371,7 @@ namespace SevenZipExtractor.LibAdapter {
         }
 
         public string GetHasherName(uint index) {
-            PropVariant prop = new PropVariant();
+            Variant prop = new Variant();
             try {
                 var hresult = Hashers.GetHasherProp(index, NMethodPropID.kName, ref prop);
                 if (hresult != HResults.S_OK) {
@@ -388,7 +388,7 @@ namespace SevenZipExtractor.LibAdapter {
         }
 
         public ulong GetHasherDigestSize(uint index) {
-            PropVariant prop = new PropVariant();
+            Variant prop = new Variant();
             try {
                 if (Hashers.GetHasherProp(index, NMethodPropID.kDigestSize, ref prop) != HResults.S_OK)
                     return 0;
@@ -435,7 +435,7 @@ namespace SevenZipExtractor.LibAdapter {
                 newFormat.FormatIndex = i;
                 newFormat.Name = GetHandlerProperty<string>(i, NHandlerPropID.kName);
 
-                PropVariant classGuid = new PropVariant();
+                Variant classGuid = new Variant();
                 try {
                     if (GetHandlerProperty(i, NHandlerPropID.kClassID, ref classGuid) != HResults.S_OK) {
                         continue;
@@ -457,7 +457,7 @@ namespace SevenZipExtractor.LibAdapter {
                 newFormat.TimeFlags = GetHandlerProperty<uint>(i, NHandlerPropID.kTimeFlags);
 
 
-                PropVariant sigVariant = new PropVariant();
+                Variant sigVariant = new Variant();
                 try {
                     var sig = GetHandlerPropertyRaw(i, NHandlerPropID.kSignature, sigVariant);
                     newFormat.Signatures = newFormat.Signatures ?? new List<byte[]>();
@@ -522,7 +522,7 @@ namespace SevenZipExtractor.LibAdapter {
             return true;
         }
 
-        public int GetHandlerProperty(uint index, NHandlerPropID propID, ref PropVariant value) {
+        public int GetHandlerProperty(uint index, NHandlerPropID propID, ref Variant value) {
             if (_GetHandlerProperty2 != null) {
                 return _GetHandlerProperty2(index, propID, ref value);
             }
@@ -530,13 +530,14 @@ namespace SevenZipExtractor.LibAdapter {
         }
 
         /// <summary>
-        /// Returns a raw byte representation of a binary string value
+        /// Returns a raw byte ref to a binary string value.
+        /// Only valid as long as the variant is valid.
         /// </summary>
         /// <param name="index"></param>
         /// <param name="propID"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public ReadOnlySpan<byte> GetHandlerPropertyRaw(uint index, NHandlerPropID propID, PropVariant value) {
+        public ReadOnlySpan<byte> GetHandlerPropertyRaw(uint index, NHandlerPropID propID, Variant value) {
             if (GetHandlerProperty(index, propID, ref value) == HResults.S_OK) {
                 if ((value.ElementType == VariantElementType.BinaryString
                         || value.ElementType == VariantElementType.Empty)) {
@@ -558,7 +559,7 @@ namespace SevenZipExtractor.LibAdapter {
         }
 
         public T GetHandlerProperty<T>(uint index, NHandlerPropID propID) {
-            PropVariant value = new PropVariant();
+            Variant value = new Variant();
             try {
                 if (GetHandlerProperty(index, propID, ref value) == HResults.S_OK) {
                     if (typeof(T) == typeof(string)
@@ -602,16 +603,16 @@ namespace SevenZipExtractor.LibAdapter {
     internal delegate int GetNumberOfMethodsDelegate(ref uint numMethods);
 
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
-    internal delegate int GetHandlerPropertyDelegate([In] NHandlerPropID propID, ref PropVariant value);
+    internal delegate int GetHandlerPropertyDelegate([In] NHandlerPropID propID, ref Variant value);
 
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
-    internal delegate int GetHandlerProperty2Delegate([In] uint index, [In] NHandlerPropID propID, ref PropVariant value);
+    internal delegate int GetHandlerProperty2Delegate([In] uint index, [In] NHandlerPropID propID, ref Variant value);
 
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
     internal delegate int GetNumberOfFormatsDelegate(ref uint numMethods);
 
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
-    internal delegate int GetMethodPropertyDelegate([In] uint index, [In] NMethodPropID propID, ref PropVariant value);
+    internal delegate int GetMethodPropertyDelegate([In] uint index, [In] NMethodPropID propID, ref Variant value);
 
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
     internal delegate int CreateDecoderDelegate([In] uint index, [In] ref Guid classID, out IntPtr outObject);

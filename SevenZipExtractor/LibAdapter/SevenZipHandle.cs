@@ -134,7 +134,7 @@ namespace SevenZipExtractor.LibAdapter
         }
 
         #region static functions
-        public static int PropVariantClear(ref PropVariant pvar)
+        public static int PropVariantClear(ref Variant pvar)
         {
             if (IsWindows)
             {
@@ -155,7 +155,7 @@ namespace SevenZipExtractor.LibAdapter
         }
 
         [DllImport("ole32.dll", EntryPoint = "PropVariantClear")]
-        private static extern int WindowsPropVariantClear(ref PropVariant pvar);
+        private static extern int WindowsPropVariantClear(ref Variant pvar);
 
         public static IntPtr StringToBSTR(string s)
         {

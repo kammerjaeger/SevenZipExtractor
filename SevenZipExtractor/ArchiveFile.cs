@@ -205,7 +205,7 @@ namespace SevenZipExtractor
         }
 
         private T? GetProperty<T>(uint fileIndex, ItemPropId name) {
-            PropVariant propVariant = new PropVariant();
+            LibAdapter.Variant propVariant = new LibAdapter.Variant();
             this.archive.GetProperty(fileIndex, name, ref propVariant);
             object? value = propVariant.Value;
 
@@ -248,7 +248,7 @@ namespace SevenZipExtractor
             GC.SuppressFinalize(this);
         }
 
-        public int GetProperty(ItemPropId propID, ref PropVariant value) {
+        public int GetProperty(ItemPropId propID, ref LibAdapter.Variant value) {
             if (propID == ItemPropId.kpidName && CurrentArchiveName != null) {
                 value.Clear();
                 value.Type = SharpGen.Runtime.Win32.VariantType.Default;

@@ -261,7 +261,7 @@ namespace SevenZipExtractor.LibAdapter
                     System.Int32 __result__ = default (System.Int32);
                     SevenZipExtractor.LibAdapter.ItemPropId propID = default (SevenZipExtractor.LibAdapter.ItemPropId);
                     propID = (SevenZipExtractor.LibAdapter.ItemPropId)param0;
-                    ref SevenZipExtractor.LibAdapter.PropVariant value = ref System.Runtime.CompilerServices.Unsafe.AsRef<SevenZipExtractor.LibAdapter.PropVariant>(param1);
+                    ref SevenZipExtractor.LibAdapter.Variant value = ref System.Runtime.CompilerServices.Unsafe.AsRef<SevenZipExtractor.LibAdapter.Variant>(param1);
                     IArchiveOpenVolumeCallback @this = (IArchiveOpenVolumeCallback)ToShadow<SevenZipExtractor.LibAdapter.IArchiveOpenVolumeCallbackShadow>(thisObject).Callback;
                     __result__ = @this.GetProperty(propID, ref value);
                     return __result__;
@@ -311,7 +311,7 @@ namespace SevenZipExtractor.LibAdapter
     [SharpGen.Runtime.ShadowAttribute(typeof (SevenZipExtractor.LibAdapter.IArchiveOpenVolumeCallbackShadow))]
     public partial interface IArchiveOpenVolumeCallback : SharpGen.Runtime.IUnknown
     {
-        System.Int32 GetProperty(SevenZipExtractor.LibAdapter.ItemPropId propID, ref SevenZipExtractor.LibAdapter.PropVariant value);
+        System.Int32 GetProperty(SevenZipExtractor.LibAdapter.ItemPropId propID, ref SevenZipExtractor.LibAdapter.Variant value);
         System.Int32 GetStream(System.String name, out SevenZipExtractor.LibAdapter.IInStream inStream);
     }
 
@@ -358,7 +358,7 @@ namespace SevenZipExtractor.LibAdapter
                     index = (System.UInt32)param0;
                     SevenZipExtractor.LibAdapter.NMethodPropID propID = default (SevenZipExtractor.LibAdapter.NMethodPropID);
                     propID = (SevenZipExtractor.LibAdapter.NMethodPropID)param1;
-                    ref SevenZipExtractor.LibAdapter.PropVariant value = ref System.Runtime.CompilerServices.Unsafe.AsRef<SevenZipExtractor.LibAdapter.PropVariant>(param2);
+                    ref SevenZipExtractor.LibAdapter.Variant value = ref System.Runtime.CompilerServices.Unsafe.AsRef<SevenZipExtractor.LibAdapter.Variant>(param2);
                     ICompressCodecsInfo @this = (ICompressCodecsInfo)ToShadow<SevenZipExtractor.LibAdapter.ICompressCodecsInfoShadow>(thisObject).Callback;
                     __result__ = @this.GetProperty(index, propID, ref value);
                     return __result__;
@@ -430,7 +430,7 @@ namespace SevenZipExtractor.LibAdapter
     public partial interface ICompressCodecsInfo : SharpGen.Runtime.IUnknown
     {
         System.Int32 GetNumMethods(out System.UInt32 numMethods);
-        System.Int32 GetProperty(System.UInt32 index, SevenZipExtractor.LibAdapter.NMethodPropID propID, ref SevenZipExtractor.LibAdapter.PropVariant value);
+        System.Int32 GetProperty(System.UInt32 index, SevenZipExtractor.LibAdapter.NMethodPropID propID, ref SevenZipExtractor.LibAdapter.Variant value);
         System.Int32 CreateDecoder(System.UInt32 index, System.Guid iid, ref System.IntPtr coder);
         System.Int32 CreateEncoder(System.UInt32 index, System.Guid iid, ref System.IntPtr coder);
     }
@@ -466,7 +466,7 @@ namespace SevenZipExtractor.LibAdapter
         /// <returns>No documentation.</returns>
         /// <unmanaged>LONG ICompressCodecsInfo::GetProperty([In] unsigned int index,[In] PROPID propID,[InOut] PROPVARIANT* value)</unmanaged>
         /// <unmanaged-short>ICompressCodecsInfo::GetProperty</unmanaged-short>
-        public unsafe System.Int32 GetProperty(System.UInt32 index, SevenZipExtractor.LibAdapter.NMethodPropID propID, ref SevenZipExtractor.LibAdapter.PropVariant value)
+        public unsafe System.Int32 GetProperty(System.UInt32 index, SevenZipExtractor.LibAdapter.NMethodPropID propID, ref SevenZipExtractor.LibAdapter.Variant value)
         {
             System.Int32 __result__;
             fixed (void *value_ = &value)
@@ -661,7 +661,7 @@ namespace SevenZipExtractor.LibAdapter
                     index = (System.UInt32)param0;
                     SevenZipExtractor.LibAdapter.NMethodPropID propID = default (SevenZipExtractor.LibAdapter.NMethodPropID);
                     propID = (SevenZipExtractor.LibAdapter.NMethodPropID)param1;
-                    ref SevenZipExtractor.LibAdapter.PropVariant value = ref System.Runtime.CompilerServices.Unsafe.AsRef<SevenZipExtractor.LibAdapter.PropVariant>(param2);
+                    ref SevenZipExtractor.LibAdapter.Variant value = ref System.Runtime.CompilerServices.Unsafe.AsRef<SevenZipExtractor.LibAdapter.Variant>(param2);
                     IHashers @this = (IHashers)ToShadow<SevenZipExtractor.LibAdapter.IHashersShadow>(thisObject).Callback;
                     __result__ = @this.GetHasherProp(index, propID, ref value);
                     return __result__;
@@ -711,7 +711,7 @@ namespace SevenZipExtractor.LibAdapter
     public partial interface IHashers : SharpGen.Runtime.IUnknown
     {
         System.UInt32 GetNumHashers();
-        System.Int32 GetHasherProp(System.UInt32 index, SevenZipExtractor.LibAdapter.NMethodPropID propID, ref SevenZipExtractor.LibAdapter.PropVariant value);
+        System.Int32 GetHasherProp(System.UInt32 index, SevenZipExtractor.LibAdapter.NMethodPropID propID, ref SevenZipExtractor.LibAdapter.Variant value);
         System.Int32 CreateHasher(System.UInt32 index, out SevenZipExtractor.LibAdapter.IHasher hasher);
     }
 
@@ -754,7 +754,7 @@ namespace SevenZipExtractor.LibAdapter
         /// <returns>No documentation.</returns>
         /// <unmanaged>LONG IHashers::GetHasherProp([In] unsigned int index,[In] PROPID propID,[InOut] PROPVARIANT* value)</unmanaged>
         /// <unmanaged-short>IHashers::GetHasherProp</unmanaged-short>
-        public unsafe System.Int32 GetHasherProp(System.UInt32 index, SevenZipExtractor.LibAdapter.NMethodPropID propID, ref SevenZipExtractor.LibAdapter.PropVariant value)
+        public unsafe System.Int32 GetHasherProp(System.UInt32 index, SevenZipExtractor.LibAdapter.NMethodPropID propID, ref SevenZipExtractor.LibAdapter.Variant value)
         {
             System.Int32 __result__;
             fixed (void *value_ = &value)
@@ -849,7 +849,7 @@ namespace SevenZipExtractor.LibAdapter
         /// <returns>No documentation.</returns>
         /// <unmanaged>LONG IInArchive::GetProperty([In] unsigned int index,[In] PROPID propID,[InOut] PROPVARIANT* value)</unmanaged>
         /// <unmanaged-short>IInArchive::GetProperty</unmanaged-short>
-        public unsafe System.Int32 GetProperty(System.UInt32 index, SevenZipExtractor.LibAdapter.ItemPropId propID, ref SevenZipExtractor.LibAdapter.PropVariant value)
+        public unsafe System.Int32 GetProperty(System.UInt32 index, SevenZipExtractor.LibAdapter.ItemPropId propID, ref SevenZipExtractor.LibAdapter.Variant value)
         {
             System.Int32 __result__;
             fixed (void *value_ = &value)
@@ -886,7 +886,7 @@ namespace SevenZipExtractor.LibAdapter
         /// <returns>No documentation.</returns>
         /// <unmanaged>LONG IInArchive::GetArchiveProperty([In] PROPID propID,[In] PROPVARIANT* value)</unmanaged>
         /// <unmanaged-short>IInArchive::GetArchiveProperty</unmanaged-short>
-        public unsafe System.Int32 GetArchiveProperty(SevenZipExtractor.LibAdapter.ItemPropId propID, SevenZipExtractor.LibAdapter.PropVariant value)
+        public unsafe System.Int32 GetArchiveProperty(SevenZipExtractor.LibAdapter.ItemPropId propID, SevenZipExtractor.LibAdapter.Variant value)
         {
             System.Int32 __result__;
             __result__ = SevenZipExtractor.LocalInterop.CalliStdCallint(this._nativePointer, unchecked ((System.UInt32)propID), &value, (*(void ***)this._nativePointer)[8 + SevenZipHandle.FuncOffset]);

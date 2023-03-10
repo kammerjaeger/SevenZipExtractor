@@ -29,7 +29,7 @@ namespace SevenZipExtractor.LibAdapter {
                 LinuxPropVariantClear = Marshal.GetDelegateForFunctionPointer<PropVariantClearDelegate>(LinuxPropVariantClearAddress);
             } else {
                 LinuxSysAllocStringLen = (_, __) => throw new NotSupportedException("Only supported on Linux");
-                LinuxPropVariantClear = (ref PropVariant _) => throw new NotSupportedException("Only supported on Linux");
+                LinuxPropVariantClear = (ref Variant _) => throw new NotSupportedException("Only supported on Linux");
             }
         }
         public unsafe IntPtr LinuxStringToBSTR(string s) {
@@ -57,5 +57,5 @@ namespace SevenZipExtractor.LibAdapter {
     internal delegate IntPtr SysAllocStringLenDelegate([In] IntPtr s, uint len);
 
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
-    public delegate int PropVariantClearDelegate(ref PropVariant pvar);
+    public delegate int PropVariantClearDelegate(ref Variant pvar);
 }

@@ -137,7 +137,7 @@ namespace SevenZipExtractor.LibAdapter
             return HResults.S_OK;
         }
 
-        public int GetProperty(uint index, NMethodPropID propID, ref PropVariant value) {
+        public int GetProperty(uint index, NMethodPropID propID, ref Variant value) {
             if (coders.Count <= index) {
                 return HResults.E_FAIL;
             }
@@ -183,7 +183,7 @@ namespace SevenZipExtractor.LibAdapter
             return (uint)hashers.Count;
         }
 
-        public int GetHasherProp(uint index, NMethodPropID propID, ref PropVariant value) {
+        public int GetHasherProp(uint index, NMethodPropID propID, ref Variant value) {
             var hashinfo = hashers[(int) index];
             return hashinfo.lib.Hashers.GetHasherProp(hashinfo.hasherIndex, propID, ref value);
         }
