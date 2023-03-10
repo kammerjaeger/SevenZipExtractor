@@ -19,5 +19,10 @@ namespace SevenZipExtractor.Tests
         {
             this.TestExtractToStream(Resources.TestFiles.SevenZip, this.TestEntriesWithoutFolder, SevenZipFormat.SevenZip);
         }
+
+        [TestMethod]
+        public void TestFormatDetection() {
+            TestFormatDetection(Resources.TestFiles.SevenZip);
+        }
     }
 }

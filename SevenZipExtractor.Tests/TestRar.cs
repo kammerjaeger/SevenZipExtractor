@@ -16,5 +16,10 @@ namespace SevenZipExtractor.Tests
         {
             this.TestExtractToStream(Resources.TestFiles.rar, this.TestEntriesWithFolder, SevenZipFormat.Rar5);
         }
+
+        [TestMethod]
+        public void TestFormatDetection() {
+            TestFormatDetection(Resources.TestFiles.rar);
+        }
     }
 }

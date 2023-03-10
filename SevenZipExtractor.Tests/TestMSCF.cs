@@ -25,5 +25,10 @@ namespace SevenZipExtractor.Tests
         {
             this.TestExtractToStream(Resources.TestFiles.mslz, TestSingleDllFile, SevenZipFormat.Mslz, "mslz.dl_");
         }
+
+        [TestMethod]
+        public void TestFormatDetection() {
+            TestFormatDetection(Resources.TestFiles.mslz, "mslz.dl_");
+        }
     }
 }

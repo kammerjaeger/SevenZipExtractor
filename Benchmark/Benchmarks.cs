@@ -8,6 +8,7 @@ using BenchmarkDotNet.Engines;
 using BenchmarkDotNet.Environments;
 using BenchmarkDotNet.Jobs;
 using SevenZipExtractor;
+using SevenZipExtractor.LibAdapter;
 
 namespace Benchmark
 {
@@ -29,6 +30,7 @@ namespace Benchmark
 
         private readonly string extractTo = Path.Combine(Directory, Path.GetFileNameWithoutExtension(ArchiveFileName));
         private readonly Consumer consumer = new Consumer();
+        private SevenZipHandle handle;
 
         [GlobalSetup]
         public void GlobalSetup()
@@ -38,13 +40,22 @@ namespace Benchmark
                 System.IO.Directory.Delete(Directory, true);
             }
             System.IO.Directory.CreateDirectory(Directory);
+            handle = SevenZipHandle.InitializeAndValidateLibrary();
+        }
+
+        [GlobalCleanup]
+        public void GlobalCleanup() {
+            if (handle != null) {
+                handle.Dispose();
+                handle = null;
+            }
         }
 
         // you can iterate over the entries in an archive and access their properties
         [Benchmark]
         public void PrintEntries()
         {
-            using (ArchiveFile archiveFile = new ArchiveFile(ArchiveFileName))
+            using (ArchiveFile archiveFile = new ArchiveFile(handle, ArchiveFileName))
             {
                 foreach (Entry entry in archiveFile.Entries)
                 {
@@ -60,7 +71,7 @@ namespace Benchmark
         [Benchmark]
         public void ExtractFirstEntry()
         {
-            using (ArchiveFile archiveFile = new ArchiveFile(ArchiveFileName))
+            using (ArchiveFile archiveFile = new ArchiveFile(handle, ArchiveFileName))
             {
                 Entry entry = archiveFile.Entries.First(x => !x.IsFolder);
                 entry.Extract(Path.Combine(Directory, Path.GetFileName(entry.FileName)));
@@ -73,7 +84,7 @@ namespace Benchmark
         [Benchmark]
         public void ExtractLastEntry()
         {
-            using (ArchiveFile archiveFile = new ArchiveFile(ArchiveFileName))
+            using (ArchiveFile archiveFile = new ArchiveFile(handle, ArchiveFileName))
             {
                 Entry entry = archiveFile.Entries.Last(x => !x.IsFolder);
                 entry.Extract(Path.Combine(Directory, Path.GetFileName(entry.FileName)));
@@ -85,7 +96,7 @@ namespace Benchmark
         [Benchmark]
         public void ExtractAll()
         {
-            using (ArchiveFile archiveFile = new ArchiveFile(ArchiveFileName))
+            using (ArchiveFile archiveFile = new ArchiveFile(handle, ArchiveFileName))
             {
                 archiveFile.Extract(extractTo, true);
             }

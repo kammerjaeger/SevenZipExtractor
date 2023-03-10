@@ -1,45 +1,66 @@
-﻿using System.IO;
+﻿using SevenZipExtractor.LibAdapter;
+using SharpGen.Runtime;
+using System;
+using System.IO;
 
 namespace SevenZipExtractor
 {
-    internal class ArchiveStreamCallback : IArchiveExtractCallback
-    {
+    internal class ArchiveStreamCallback : ComRefCount, IArchiveExtractCallback, IArchiveExtractCallbackMessage {
+        private bool disposedValue;
+
         private readonly uint fileNumber;
         private readonly Stream stream;
 
-        public ArchiveStreamCallback(uint fileNumber, Stream stream)
-        {
+        public ArchiveStreamCallback(uint fileNumber, Stream stream, WeakReference<SevenZipHandle> libHandle) : base(libHandle) {
             this.fileNumber = fileNumber;
             this.stream = stream;
         }
 
-        public void SetTotal(ulong total)
-        {
+        public int SetTotal(ulong total) {
+            return HResults.S_OK;
         }
 
-        public void SetCompleted(ref ulong completeValue)
-        {
+        public int SetCompleted(ulong? completeValue) {
+            return HResults.S_OK;
         }
 
-        public int GetStream(uint index, out ISequentialOutStream? outStream, AskMode askExtractMode)
-        {
-            if ((index != this.fileNumber) || (askExtractMode != AskMode.kExtract))
-            {
+        public int GetStream(uint index, out ISequentialOutStream? outStream, AskMode askExtractMode) {
+            if ((index != this.fileNumber) || (askExtractMode != AskMode.kExtract)) {
                 outStream = null;
-                return 0;
+                return HResults.S_OK;
             }
 
-            outStream = new OutStreamWrapper(this.stream);
+            outStream = new OutStreamWrapper(this.stream, LibHandle);
+            outStream.AddRef();
 
-            return 0;
+            return HResults.S_OK;
         }
 
-        public void PrepareOperation(AskMode askExtractMode)
-        {
+        public int PrepareOperation(AskMode askExtractMode) {
+            return HResults.S_OK;
         }
 
-        public void SetOperationResult(OperationResult resultEOperationResult)
-        {
+        public int SetOperationResult(OperationResult resultEOperationResult) {
+            if (resultEOperationResult != OperationResult.kOK) {
+                Console.WriteLine($"Error ${resultEOperationResult} extracting items");
+            }
+            return HResults.S_OK;
+        }
+        public int ReportExtractResult(NEventIndexType indexType, uint index, OperationResult opRes) {
+            if (opRes != OperationResult.kOK) {
+                Console.WriteLine($"Error ${opRes} extracting item ${index} error ${indexType}");
+            }
+            return HResults.S_OK;
+        }
+
+        protected virtual void Dispose(bool disposing) {
+            if (!disposedValue) {
+                if (disposing) {
+                    // stream has to be disposed by creator of the class
+                }
+                disposedValue = true;
+            }
+            base.Dispose(disposing);
         }
     }
 }

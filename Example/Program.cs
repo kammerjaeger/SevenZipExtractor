@@ -1,7 +1,9 @@
 ﻿
 using System;
 using System.IO;
+using System.Reflection.Metadata;
 using SevenZipExtractor;
+using SevenZipExtractor.LibAdapter;
 
 namespace ConsoleApplication86
 {
@@ -9,24 +11,23 @@ namespace ConsoleApplication86
     {
         static void Main(string[] args)
         {
-            using (ArchiveFile archiveFile = new ArchiveFile(@"Archive.arj"))
-            {
-                // extract all
-                archiveFile.Extract("Output");
-            }
+            using (SevenZipHandle handle = SevenZipHandle.InitializeAndValidateLibrary()) {
+                using (ArchiveFile archiveFile = new ArchiveFile(handle, @"Archive.arj")) {
+                    // extract all
+                    archiveFile.Extract("Output");
+                }
 
-            using (ArchiveFile archiveFile = new ArchiveFile("archive.arj"))
-            {
-                foreach (Entry entry in archiveFile.Entries)
-                {
-                    Console.WriteLine(entry.FileName);
+                using (ArchiveFile archiveFile = new ArchiveFile(handle, "archive.arj")) {
+                    foreach (Entry entry in archiveFile.Entries) {
+                        Console.WriteLine(entry.FileName);
 
-                    // extract to file
-                    entry.Extract(entry.FileName ?? "NoFileName");
+                        // extract to file
+                        entry.Extract(entry.FileName ?? "NoFileName");
 
-                    // extract to stream
-                    MemoryStream memoryStream = new MemoryStream();
-                    entry.Extract(memoryStream);
+                        // extract to stream
+                        MemoryStream memoryStream = new MemoryStream();
+                        entry.Extract(memoryStream);
+                    }
                 }
             }
 

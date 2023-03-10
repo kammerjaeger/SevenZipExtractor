@@ -1,0 +1,205 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<config id="7ZipMapping" xmlns="urn:SharpGen.Config">
+	<assembly>SevenZipExtractor</assembly>
+	<namespace>SevenZipExtractor.LibAdapter</namespace>
+	<depends>SharpGen.Runtime</depends>
+	
+	<include-prolog>
+		// Use unicode
+		//#define UNICODE
+
+		// for SAL annotations
+		//#define _PREFAST_
+
+		// To force GUID to be declared
+		//#define INITGUID
+
+		//#define _ALLOW_KEYWORD_MACROS
+
+		// Wrap all declspec for code-gen
+		//#define __declspec(x) __attribute__((annotate(#x)))
+
+		#undef _WIN32
+		//#undef _MSC_VER
+	</include-prolog>
+
+	<sdk name="StdLib" />
+	<include file="$(THIS_CONFIG_PATH)/p7zip/C/7zTypes.h" namespace="SevenZipExtractor.LibAdapter">
+		<attach>DWORD</attach>
+	</include>
+	<include file="$(THIS_CONFIG_PATH)/p7zip/CPP/7zip/Archive/IArchive.h" namespace="SevenZipExtractor.LibAdapter" output="$(THIS_CONFIG_PATH)/LibAdapterGen">
+		<attach>IInArchive</attach>
+		<!--Open archive only with sequential stream-->
+		<attach>IArchiveOpenSeq</attach>
+		<attach>IArchiveOpenCallback</attach>
+		<attach>IArchiveExtractCallback</attach>
+		<attach>IArchiveExtractCallbackMessage</attach>
+		<attach>IArchiveOpenVolumeCallback</attach>
+		<attach>IInArchiveGetStream</attach>
+		
+	</include>
+	
+	<include file="$(THIS_CONFIG_PATH)/p7zip/CPP/7zip/IProgress.h" namespace="SevenZipExtractor.LibAdapter">
+		<attach>IProgress</attach>
+	</include>
+	<include file="$(THIS_CONFIG_PATH)/p7zip/CPP/7zip/IPassword.h" namespace="SevenZipExtractor.LibAdapter">
+		<attach>ICryptoGetTextPassword</attach>
+	</include>
+	<include file="$(THIS_CONFIG_PATH)/p7zip/CPP/7zip/IStream.h" namespace="SevenZipExtractor.LibAdapter">
+		<attach>IInStream</attach>
+		<attach>ISequentialInStream</attach>
+		<attach>IOutStream</attach>
+		<attach>ISequentialOutStream</attach>
+	</include>
+	<include file="$(THIS_CONFIG_PATH)/p7zip/CPP/Common/MyWindows.h" namespace="SevenZipExtractor.LibAdapter">
+		<attach>tagPROPVARIANT</attach>
+		<attach>PROPVARIANT</attach>
+		<attach>VARENUM</attach>
+		<attach>LARGE_INTEGER</attach>
+		<attach>ULARGE_INTEGER</attach>
+		<attach>FILETIME</attach>
+		
+		<!--<attach>SysAllocStringLen</attach>
+		<attach>VariantClear</attach>-->
+	</include>
+	<include file="$(THIS_CONFIG_PATH)/p7zip/CPP/7zip/ICoder.h" namespace="SevenZipExtractor.LibAdapter">
+		<attach>ICompressCodecsInfo</attach>
+		<attach>IHasher</attach>
+		<attach>IHashers</attach>
+		
+	</include>
+	<!--<include file="$(THIS_CONFIG_PATH)/p7zip/CPP/7zip/Archive/DllExports2.cpp" namespace="SevenZipExtractor.LibAdapter">
+		<attach>SetCodecs</attach>
+	</include>-->
+	<bindings>
+		<bind from="long" to="System.Int32" />
+		<bind from="unsigned long" to="System.UInt32" />
+		<bind from="PROPID" to="SevenZipExtractor.LibAdapter.ItemPropId"/>
+		<bind from="PROPVARIANT" to="SevenZipExtractor.LibAdapter.Variant"/>
+		<bind from="AskMode" to="SevenZipExtractor.LibAdapter.AskMode"/>
+		<bind from="OperationResult" to="SevenZipExtractor.LibAdapter.OperationResult"/>
+		<bind from="NEventIndexType" to="SevenZipExtractor.LibAdapter.NEventIndexType"/>
+		<bind from="NMethodPropID" to="SevenZipExtractor.LibAdapter.NMethodPropID"/>
+		<bind from="System.IntPtr" to="System.IntPtr"/>
+		<bind from="System.UInt64?" to="System.UInt64?"/>
+		<bind from="VARENUM" to="System.Runtime.InteropServices.VarEnum"/>
+
+		<!-- COM interfaces not directly used -->
+		<bind from="ITypeInfo" to="SevenZipExtractor.LibAdapter.ComObject" />
+		<bind from="IErrorLog" to="SevenZipExtractor.LibAdapter.ComObject" />
+		<bind from="IMoniker" to="SevenZipExtractor.LibAdapter.ComObject" />
+		<bind from="IEnumMoniker" to="SevenZipExtractor.LibAdapter.ComObject" />
+		<bind from="IBindCtx" to="SevenZipExtractor.LibAdapter.ComObject" />
+		<bind from="IRpcStubBuffer" to="SevenZipExtractor.LibAdapter.ComObject"/>
+		<bind from="IRpcChannelBuffer" to="SevenZipExtractor.LibAdapter.ComObject"/>
+		<bind from="IPropertyStore" to="SevenZipExtractor.LibAdapter.ComObject"/>
+		<bind from="IClassFactory" to="SevenZipExtractor.LibAdapter.ComObject"/>
+		<bind from="IEnumString" to="SevenZipExtractor.LibAdapter.ComObject"/>
+		<bind from="INamedPropertyStore" to="SevenZipExtractor.LibAdapter.ComObject"/>
+	</bindings>
+
+	<mapping>
+		<map interface="IInStream" callback="true" autogen-shadow="true"/>
+		<map param="IInStream::Seek::newPosition" attribute="inout" />
+		
+		<map interface="ISequentialInStream" callback="true" autogen-shadow="true"/>
+		<map param="ISequentialInStream::Read::data" attribute="out buffer" array="true"/>
+		<map param="ISequentialInStream::Read::processedSize" attribute="inout" name="processedSize"/>
+
+		<map interface="IOutStream" callback="true" autogen-shadow="true"/>
+		<map param="IOutStream::Seek::newPosition" attribute="inout" />
+
+		<map interface="ISequentialOutStream" name="ISequentialOutStream" callback="true" autogen-shadow="true"/>
+		<map param="ISequentialOutStream::Write::processedSize" name="processedSize" attribute="inout" />
+		<map param="ISequentialOutStream::Write::data" attribute="in buffer"/>
+		
+		<map interface="IProgress" name="IProgress" callback="true" autogen-shadow="true"/>
+		<map param="IProgress::SetCompleted::completeValue" attribute="in"/>
+
+		<map interface="IArchiveOpenCallback" name="IArchiveOpenCallback" callback="true" autogen-shadow="true"/>
+		<map param="IArchiveOpenCallback::SetTotal::files" attribute="in" />
+		<map param="IArchiveOpenCallback::SetTotal::bytes" attribute="in"/>
+		<map param="IArchiveOpenCallback::SetCompleted::files" attribute="in"/>
+		<map param="IArchiveOpenCallback::SetCompleted::bytes" attribute="in"/>
+		
+		<map interface="IArchiveOpenVolumeCallback" name="IArchiveOpenVolumeCallback" callback="true" autogen-shadow="true"/>
+		<map param="IArchiveOpenVolumeCallback::GetProperty::value" attribute="inout"/>
+
+		<map interface="IArchiveExtractCallback" name="IArchiveExtractCallback" callback="true" autogen-shadow="true"/>
+		<map param="IArchiveExtractCallback::PrepareOperation::askExtractMode" type="AskMode"/>
+		<map param="IArchiveExtractCallback::GetStream::askExtractMode" type="AskMode"/>
+		<map param="IArchiveExtractCallback::SetOperationResult::opRes" type="OperationResult"/>
+		
+		<map interface="IArchiveExtractCallbackMessage" name="IArchiveExtractCallbackMessage" callback="true" autogen-shadow="true"/>
+		<map param="IArchiveExtractCallbackMessage::ReportExtractResult::indexType" type="NEventIndexType"/>
+		<map param="IArchiveExtractCallbackMessage::ReportExtractResult::opRes" type="OperationResult"/>
+		
+		<map interface="IInArchive" name="IInArchive"/>
+		<map param="IInArchive::Extract::indices" attribute="in buffer"/>
+		<map param="IInArchive::GetProperty::value" attribute="inout"/>
+		<map param="IInArchive::GetNumberOfItems::numItems" attribute="inout"/>
+		<!--<map param="IInArchive::Extract::numItems" relation="length(indices)" type="int" />-->
+		
+		<map interface="IArchiveOpenSeq" name="IArchiveOpenSeq"/>
+		
+		<map interface="ICryptoGetTextPassword" name="ICryptoGetTextPassword" callback="true" autogen-shadow="true"/>
+		<map interface="IInArchiveGetStream" name="IInArchiveGetStream" callback="true" autogen-shadow="true"/>
+
+		<map interface="ICompressCodecsInfo" name="ICompressCodecsInfo" callback="true" autogen-shadow="true" callback-dual="true"/>
+		<map param="ICompressCodecsInfo::GetNumMethods::numMethods" attribute="out"/>
+		<map param="ICompressCodecsInfo::GetProperty::value" attribute="inout"/>
+		<map param="ICompressCodecsInfo::GetProperty::propID" type="NMethodPropID"/>
+		<map param="ICompressCodecsInfo::CreateDecoder::coder" attribute="inout"/>
+		<map param="ICompressCodecsInfo::CreateEncoder::coder" attribute="inout"/>
+
+		<map interface="IHashers" name="IHashers" callback="true" autogen-shadow="true" callback-dual="true"/>
+		<!--<map param="IHashers::GetNumHashers::numMethods" attribute="out"/>-->
+		<map param="IHashers::GetHasherProp::value" attribute="inout"/>
+		<map param="IHashers::GetHasherProp::propID" type="NMethodPropID"/>
+		<map method="IHashers::GetNumHashers" visibility="public"/>
+		
+
+		<map interface="IHashers" name="IHashers"/>
+		<map param="IHasher::Update::data" visibility="public" attribute="in"/>
+		<map param="IHasher::Final::digest" visibility="public" attribute="buffer"/>
+
+		<map struct="PROPVARIANT" name="PropVariant"/>
+		<map field="PROPVARIANT::vt" type="VARENUM"/>
+
+		<!--<map function="VariantClear" group="SevenZipExtractor.LibAdapter.Functions" dll='"7z"'/>
+		<map function="SysAllocStringLen" type="System.IntPtr" group="SevenZipExtractor.LibAdapter.Functions" dll='"7z"'/>
+		<map param="SysAllocStringLen::sz" type="System.IntPtr"/>
+			 
+		<map function="GetHandlerProperty" group="SevenZipExtractor.LibAdapter.Functions" />
+		<map function="Func_CreateObject" group="SevenZipExtractor.LibAdapter.Functions" />
+		<map function="SetCodecs" group="SevenZipExtractor.LibAdapter.Functions" />-->
+	</mapping>
+	
+	<extension>
+		<!--<create class="SevenZipExtractor.LibAdapter.Functions" visibility="public static" />-->
+		
+		<define enum="SevenZipExtractor.LibAdapter.ItemPropId" sizeof="4" underlying="System.UInt32" />
+		<define enum="SevenZipExtractor.LibAdapter.NMethodPropID" sizeof="4" underlying="System.UInt32" />
+		<define enum="SevenZipExtractor.LibAdapter.AskMode" sizeof="4" underlying="System.Int32" />
+		<define enum="SevenZipExtractor.LibAdapter.OperationResult" sizeof="4" underlying="System.Int32" />
+		<define enum="SevenZipExtractor.LibAdapter.NEventIndexType" sizeof="4" underlying="System.Int32" />
+		
+		<define interface="SevenZipExtractor.LibAdapter.ComObject" />
+		<context>Unknwnbase</context>
+		<map interface="IUnknown" callback="true" callback-dual="true" callback-name="ComObject" shadow-name="SevenZipExtractor.LibAdapter.ComObjectShadow" vtbl-name="SevenZipExtractor.LibAdapter.ComObjectVtbl" autogen-vtbl="false" shadow-visibility="public" />
+		<map method="IUnknown::.*" keep-implement-public="true" />
+		<map method="IUnknown::QueryInterface" check="false" hidden="true" />
+		<context-clear/>
+
+		<!--<define interface="SharpGen.Runtime.ComObject" />
+		<define interface="SharpGen.Runtime.WinRTObject" />
+
+		<define interface="SharpGen.Runtime.Win32.PropertyBag"/>
+		<define struct="SharpGen.Runtime.Win32.SecurityAttributes" sizeof="16" />
+		<define struct="SharpGen.Runtime.Win32.Variant" sizeof="16"/>-->
+		
+		<define struct="SevenZipExtractor.LibAdapter.Variant" sizeof="16"/>
+
+
+	</extension>
+</config>

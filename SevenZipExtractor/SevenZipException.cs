@@ -12,6 +12,9 @@ namespace SevenZipExtractor
         public SevenZipException(string message) : base(message)
         {
         }
+        public SevenZipException(string message, int hResult) : base(message) {
+            HResult = hResult;
+        }
 
         public SevenZipException(string message, Exception innerException) : base(message, innerException)
         {

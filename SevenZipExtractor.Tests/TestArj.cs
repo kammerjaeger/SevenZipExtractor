@@ -21,5 +21,10 @@ namespace SevenZipExtractor.Tests
 
             this.TestExtractToStream(Resources.TestFiles.ansimate_arj, testEntries, SevenZipFormat.Arj);
         }
+
+        [TestMethod]
+        public void TestFormatDetection() {
+            TestFormatDetection(Resources.TestFiles.ansimate_arj);
+        }
     }
 }

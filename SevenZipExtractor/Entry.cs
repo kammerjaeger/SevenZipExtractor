@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SevenZipExtractor.LibAdapter;
+using System;
 using System.IO;
 
 namespace SevenZipExtractor
@@ -7,11 +8,12 @@ namespace SevenZipExtractor
     {
         private readonly IInArchive archive;
         private readonly uint index;
+        private readonly WeakReference<SevenZipHandle> sevenZipHandle;
 
-        internal Entry(IInArchive archive, uint index)
-        {
+        internal Entry(IInArchive archive, uint index, WeakReference<SevenZipHandle> sevenZipHandle) {
             this.archive = archive;
             this.index = index;
+            this.sevenZipHandle = sevenZipHandle;
         }
 
         /// <summary>
@@ -111,9 +113,10 @@ namespace SevenZipExtractor
                 File.SetLastWriteTime(fileName, this.LastWriteTime);
             }
         }
-        public void Extract(Stream stream)
-        {
-            this.archive.Extract(new[] { this.index }, 1, 0, new ArchiveStreamCallback(this.index, stream));
+        public void Extract(Stream stream) {
+            var callback = new ArchiveStreamCallback(this.index, stream, sevenZipHandle);
+            callback.AddRef();
+            this.archive.Extract(new[] { this.index }, 1, 0, callback);
         }
     }
 }
