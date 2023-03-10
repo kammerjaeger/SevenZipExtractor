@@ -236,7 +236,7 @@ namespace SevenZipExtractor.LibAdapter
             System.IntPtr stream_ = System.IntPtr.Zero;
             System.Int32 __result__;
             stream_ = SharpGen.Runtime.CppObject.ToCallbackPtr<SevenZipExtractor.LibAdapter.ISequentialInStream>(stream);
-            __result__ = SevenZipExtractor.LocalInterop.CalliStdCallint(this._nativePointer, (void *)stream_, (*(void ***)this._nativePointer)[3]);
+            __result__ = SevenZipExtractor.LocalInterop.CalliStdCallint(this._nativePointer, (void *)stream_, (*(void ***)this._nativePointer)[3 + SevenZipHandle.FuncOffset]);
             System.GC.KeepAlive(stream);
             return __result__;
         }

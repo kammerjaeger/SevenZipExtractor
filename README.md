@@ -3,6 +3,9 @@ C# wrapper for 7z.dll (x86 and x64 included)
 - .NET Standard 2.0
 - .NET Framework 4.5
 
+Linux support for x64, Linux libs taken from:
+https://github.com/cielavenir/p7zip/releases/download/22.01.3/linux-x64.zip
+
 [![NuGet](https://img.shields.io/nuget/dt/SevenZipExtractor.svg?style=flat-square)](https://www.nuget.org/packages/SevenZipExtractor)
 [![NuGet](https://img.shields.io/nuget/v/SevenZipExtractor.svg?style=flat-square)](https://www.nuget.org/packages/SevenZipExtractor)
 
@@ -120,6 +123,7 @@ using (ArchiveFile archiveFile = new ArchiveFile(response.GetResponseStream())
 
 ## 7z.dll
 7z.dll (x86 and x64) will be added to your BIN folder automatically.
+7z.so (x64) and additional codecs
 
 
 ## License

@@ -5,16 +5,6 @@ using System.ComponentModel;
 using System.Runtime.InteropServices;
 
 namespace SevenZipExtractor.LibAdapter {
-    internal struct DllCodecInfo {
-        uint LibIndex;
-        uint CodecIndex;
-        bool? IsFilter;
-        Guid? Encoder;
-        Guid? Decoder;
-    };
-    
-
-
     internal class CompressorLib : LibBase {
 
 

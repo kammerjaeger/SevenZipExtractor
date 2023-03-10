@@ -1,0 +1,13 @@
+# How to generate the lib interfaces
+
+ - Get the source code of the linux/windows version
+ - Unpack it to p7zip into the folder SevenZipExtractor
+   For the development this src was used: https://github.com/cielavenir/p7zip
+ - In SevenZipExtractor.csproj uncomment the line '''<SharpGenMapping Include="LibAdapter/Mapping.xml" />'''
+ - Build the project
+ - Migrate any needed changes from 'LibAdapterGen' into 'LibAdapter'
+	- Make sure offsets have '''x + SevenZipHandle.FuncOffset''' to accomondete the difference between linux and windows
+	- Make sure ComObjectShadow reference the modified version
+	- Make sure '''CallingConvention.Winapi''' is used
+ - Comment the line '''<SharpGenMapping Include="LibAdapter/Mapping.xml" />''' again
+ - Run build again to remove the duplicate files 

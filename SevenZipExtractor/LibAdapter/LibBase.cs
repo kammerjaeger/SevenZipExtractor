@@ -134,6 +134,12 @@ namespace SevenZipExtractor.LibAdapter {
             _GetNumberOfFormats = LoadFunctionOrDefault<GetNumberOfFormatsDelegate>("GetNumberOfFormats");
         }
 
+        /// <summary>
+        /// Load function if available otherwise return null
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="functionName"></param>
+        /// <returns></returns>
         protected T? LoadFunctionOrDefault<T>(string functionName) {
             try {
                 var funcAddr = NativeLibrary.GetExport(handle, functionName);
@@ -141,10 +147,18 @@ namespace SevenZipExtractor.LibAdapter {
                     return default;
                 }
                 return Marshal.GetDelegateForFunctionPointer<T>(funcAddr);
-            } catch (EntryPointNotFoundException _ex) {
+            } catch (EntryPointNotFoundException) {
                 return default;
             }
         }
+
+        /// <summary>
+        /// Load function, if not available exception will be thrown
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="functionName"></param>
+        /// <returns></returns>
+        /// <exception cref="SevenZipException"></exception>
         protected T LoadFunction<T>(string functionName) {
             var funcAddr = NativeLibrary.GetExport(handle, functionName);
             if (funcAddr == IntPtr.Zero) {
@@ -475,6 +489,12 @@ namespace SevenZipExtractor.LibAdapter {
             return formats;
         }
 
+        /// <summary>
+        /// Archive test function, test if a byte sequence is the specific archive
+        /// </summary>
+        /// <param name="function"></param>
+        /// <param name="bytes"></param>
+        /// <returns></returns>
         private unsafe IsArcResult IsArcCall(IsArcDelegate function, ReadOnlySpan<byte> bytes) {
             if (bytes.Length == 0) {
                 return 0;
@@ -508,6 +528,14 @@ namespace SevenZipExtractor.LibAdapter {
             }
             return _GetHandlerProperty!(propID, ref value);
         }
+
+        /// <summary>
+        /// Returns a raw byte representation of a binary string value
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="propID"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public ReadOnlySpan<byte> GetHandlerPropertyRaw(uint index, NHandlerPropID propID, PropVariant value) {
             if (GetHandlerProperty(index, propID, ref value) == HResults.S_OK) {
                 if ((value.ElementType == VariantElementType.BinaryString
@@ -540,7 +568,7 @@ namespace SevenZipExtractor.LibAdapter {
                     } else if (typeof(T) == typeof(uint)
                         && (value.ElementType == VariantElementType.UInt
                             || value.ElementType == VariantElementType.Empty)) {
-                        return (T)(value.Value ?? 0);
+                        return (T)(value.Value ?? (uint) 0);
                     } else if (typeof(T) == typeof(bool)
                         && (value.ElementType == VariantElementType.Bool
                             || value.ElementType == VariantElementType.Empty)) {
@@ -569,7 +597,6 @@ namespace SevenZipExtractor.LibAdapter {
     [In] ref Guid classID,
     [In] ref Guid interfaceID,
     out IntPtr outObject);
-    //[MarshalAs(UnmanagedType.Interface)] out object outObject);
 
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
     internal delegate int GetNumberOfMethodsDelegate(ref uint numMethods);
@@ -601,7 +628,7 @@ namespace SevenZipExtractor.LibAdapter {
 
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
     internal delegate int SetCaseSensitiveDelegate(
-        [In] Int32 caseSensitive);
+        [In] int caseSensitive);
 
     [UnmanagedFunctionPointer(CallingConvention.Winapi)]
     internal delegate int SetLargePageModeDelegate();
