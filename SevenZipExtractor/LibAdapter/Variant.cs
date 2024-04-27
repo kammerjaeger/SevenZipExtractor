@@ -19,11 +19,10 @@
 // THE SOFTWARE.
 
 // code adapted from https://github.com/SharpGenTools/SharpGen.Runtime.COM/blob/7da33e7a23ea8660e8e1fb1bdd4c4f0d64afd264/Win32/Variant.cs
-// Added functions:
-// - variant clear
-// - support for linux free functions in 7zip lib (does this work correct in the codec libs, too?)
-// - support for guid and raw byte btrs strings
-// - support for setting btrs strings
+// Changes:
+// - Added variant clear
+// - Add support for linux free functions in 7zip lib (does this work correct in the codec libs, too?)
+// - Added support for guid and raw byte btrs strings
 
 using SharpGen.Runtime.Win32;
 using SharpGen.Runtime;

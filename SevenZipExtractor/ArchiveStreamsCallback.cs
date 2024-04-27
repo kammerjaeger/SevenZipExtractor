@@ -1,4 +1,5 @@
-﻿using SevenZipExtractor.LibAdapter;
+﻿using Microsoft.Extensions.Logging;
+using SevenZipExtractor.LibAdapter;
 using SharpGen.Runtime;
 using System;
 using System.Collections.Generic;
@@ -10,9 +11,11 @@ namespace SevenZipExtractor
 
         private readonly IList<Stream?> streams;
         private bool disposedValue;
+        private readonly ILogger logger;
 
-        public ArchiveStreamsCallback(IList<Stream?> streams, WeakReference<SevenZipHandle> libHandle): base(libHandle) {
+        public ArchiveStreamsCallback(IList<Stream?> streams, WeakReference<SevenZipHandle> libHandle, ILogger logger): base(libHandle) {
             this.streams = streams;
+            this.logger = logger;
         }
 
         public int SetTotal(ulong total) {
@@ -41,7 +44,7 @@ namespace SevenZipExtractor
                 return HResults.S_OK;
             }
 
-            outStream = new OutStreamWrapper(stream, LibHandle);
+            outStream = new OutStreamWrapper(stream, false, LibHandle);
             outStream.AddRef();
             return HResults.S_OK;
         }
@@ -50,19 +53,19 @@ namespace SevenZipExtractor
             return HResults.S_OK;
         }
 
-        public int SetOperationResult(OperationResult resultEOperationResult) {
-            if (resultEOperationResult != OperationResult.kOK) {
-                Console.WriteLine($"Error ${resultEOperationResult} extracting items");
+        public int SetOperationResult(OperationResult opRes) {
+            if (opRes != OperationResult.kOK) {
+                logger.LogWarning("Error {opRes} while setting result items", opRes);
             }
             return HResults.S_OK;
         }
         public int ReportExtractResult(NEventIndexType indexType, uint index, OperationResult opRes) {
             if (opRes != OperationResult.kOK) {
-                Console.WriteLine($"Error ${opRes} extracting item ${index} error ${indexType}");
+                logger.LogWarning("Error {opRes} extracting item {index} error {indexType}", opRes, index, indexType);
             }
             return HResults.S_OK;
         }
-        protected virtual void Dispose(bool disposing) {
+        protected override void Dispose(bool disposing) {
             if (!disposedValue) {
                 if (disposing) {
                     // streams are not disposed here

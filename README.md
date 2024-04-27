@@ -134,6 +134,10 @@ using (ArchiveFile archiveFile = new ArchiveFile(response.GetResponseStream())
 
 
 ## Changelog
+1.0.16
+- fixed stream should be closed by caller
+- fixed logging and some small bugfixes
+
 1.0.17 / 2022.04.08
 - #54 4Gb+ archives fixed! 🎉 (Thanks [Pyroluk](https://github.com/Pyroluk))
 

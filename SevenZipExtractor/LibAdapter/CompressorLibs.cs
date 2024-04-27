@@ -185,12 +185,13 @@ namespace SevenZipExtractor.LibAdapter
 
         public int GetHasherProp(uint index, NMethodPropID propID, ref Variant value) {
             var hashinfo = hashers[(int) index];
-            return hashinfo.lib.Hashers.GetHasherProp(hashinfo.hasherIndex, propID, ref value);
+            return hashinfo.lib.Hashers?.GetHasherProp(hashinfo.hasherIndex, propID, ref value) ?? -1;
         }
 
-        public int CreateHasher(uint index, out IHasher hasher) {
+        public int CreateHasher(uint index, out IHasher? hasher) {
             var hashinfo = hashers[(int)index];
-            return hashinfo.lib.Hashers.CreateHasher(hashinfo.hasherIndex, out hasher);
+            hasher = null;
+            return hashinfo.lib.Hashers?.CreateHasher(hashinfo.hasherIndex, out hasher) ?? -1;
         }
 
         public ArcInfo? FindFormatForArchiveName(string archivePath) {

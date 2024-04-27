@@ -97,7 +97,7 @@ namespace SevenZipExtractor.LibAdapter {
         /// <summary>
         /// Gets the hashers object, not thread safe
         /// </summary>
-        public IHashers Hashers {
+        public IHashers? Hashers {
             get {
                 if (!initHashers) {
                     if (_GetHashers(out var hashersPtr) == HResults.S_OK) {
@@ -357,7 +357,7 @@ namespace SevenZipExtractor.LibAdapter {
         public ulong GetHasherId(uint index) {
             Variant prop = new Variant();
             try {
-                var hresult = Hashers.GetHasherProp(index, NMethodPropID.kID, ref prop);
+                var hresult = Hashers?.GetHasherProp(index, NMethodPropID.kID, ref prop);
                 if (hresult != HResults.S_OK) {
                     return 0;
                 }
@@ -373,9 +373,13 @@ namespace SevenZipExtractor.LibAdapter {
         public string GetHasherName(uint index) {
             Variant prop = new Variant();
             try {
-                var hresult = Hashers.GetHasherProp(index, NMethodPropID.kName, ref prop);
+                var hresult = Hashers?.GetHasherProp(index, NMethodPropID.kName, ref prop);
+                if (hresult == null)
+                {
+                    throw new SevenZipException("Could not get hasher name, no hashers available");
+                }
                 if (hresult != HResults.S_OK) {
-                    throw new SevenZipException("Could not get hasher name", hresult);
+                    throw new SevenZipException("Could not get hasher name", hresult ?? -1);
                 }
                 if (prop.ElementType == VariantElementType.BinaryString /*VT_BSTR*/) {
 
@@ -390,7 +394,7 @@ namespace SevenZipExtractor.LibAdapter {
         public ulong GetHasherDigestSize(uint index) {
             Variant prop = new Variant();
             try {
-                if (Hashers.GetHasherProp(index, NMethodPropID.kDigestSize, ref prop) != HResults.S_OK)
+                if (Hashers?.GetHasherProp(index, NMethodPropID.kDigestSize, ref prop) != HResults.S_OK)
                     return 0;
                 if (prop.ElementType == VariantElementType.UInt /*VT_UI4*/)
                     return (uint)(prop.Value ?? 0);

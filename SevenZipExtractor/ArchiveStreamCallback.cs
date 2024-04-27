@@ -30,7 +30,7 @@ namespace SevenZipExtractor
                 return HResults.S_OK;
             }
 
-            outStream = new OutStreamWrapper(this.stream, LibHandle);
+            outStream = new OutStreamWrapper(this.stream, false, LibHandle);
             outStream.AddRef();
 
             return HResults.S_OK;
@@ -53,7 +53,7 @@ namespace SevenZipExtractor
             return HResults.S_OK;
         }
 
-        protected virtual void Dispose(bool disposing) {
+        protected override void Dispose(bool disposing) {
             if (!disposedValue) {
                 if (disposing) {
                     // stream has to be disposed by creator of the class

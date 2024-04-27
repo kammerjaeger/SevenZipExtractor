@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-	<TargetFrameworks>net6.0</TargetFrameworks>
+    <TargetFrameworks>net6.0</TargetFrameworks>
     <AssemblyTitle>SevenZipWrapper</AssemblyTitle>
     <Product>SevenZipWrapper</Product>
     <Description>C# wrapper for 7z.dll (included)</Description>
@@ -32,24 +32,13 @@
 	
 	
   <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)x64\7z.dll">
-      <PackagePath>build\x64\</PackagePath>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-
-      <Pack>true</Pack>
-    </None>
-    <None Include="$(MSBuildThisFileDirectory)x86\7z.dll">
-      <PackagePath>build\x86\</PackagePath>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Pack>true</Pack>
-    </None>
-
     <None Include="SevenZipExtractor.targets" Pack="true" PackagePath="build\">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1" />
     <PackageReference Include="SharpGen.Runtime" Version="1.2.1" />
     <PackageReference Include="SharpGen.Runtime.COM" Version="1.2.0" />
     <PackageReference Include="SharpGenTools.Sdk" Version="1.2.1">
@@ -59,53 +48,80 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="x64\7z.so">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	<None Include="x64\7z.so" PackagePath="contentFiles/x64">
+   	  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  <Pack>true</Pack>
+	</None>
+	<None Include="x64\7z.dll" PackagePath="contentFiles/x64">
+		<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		<Pack>true</Pack>
     </None>
-    <None Update="x64\Codecs\Balz.so">
+    <None Include="x64\Codecs\Balz.so" PackagePath="contentFiles/x64/Codecs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Pack>true</Pack>
     </None>
-    <None Update="x64\Codecs\Bcm.so">
+    <None Include="x64\Codecs\Bcm.so" PackagePath="contentFiles/x64/Codecs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Pack>true</Pack>
     </None>
-    <None Update="x64\Codecs\Blake3.so">
+    <None Include="x64\Codecs\Blake3.so" PackagePath="contentFiles/x64/Codecs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Pack>true</Pack>
     </None>
-    <None Update="x64\Codecs\Brotli.so">
+    <None Include="x64\Codecs\Brotli.so" PackagePath="contentFiles/x64/Codecs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Pack>true</Pack>
     </None>
-    <None Update="x64\Codecs\FLzma2.so">
+    <None Include="x64\Codecs\FLzma2.so" PackagePath="contentFiles/x64/Codecs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Pack>true</Pack>
     </None>
-    <None Update="x64\Codecs\Lizard.so">
+    <None Include="x64\Codecs\Lizard.so" PackagePath="contentFiles/x64/Codecs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Pack>true</Pack>
     </None>
-    <None Update="x64\Codecs\Lz4.so">
+    <None Include="x64\Codecs\Lz4.so" PackagePath="contentFiles/x64/Codecs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Pack>true</Pack>
     </None>
-    <None Update="x64\Codecs\Lz5.so">
+    <None Include="x64\Codecs\Lz5.so" PackagePath="contentFiles/x64/Codecs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Pack>true</Pack>
     </None>
-    <None Update="x64\Codecs\Lzham.so">
+    <None Include="x64\Codecs\Lzham.so" PackagePath="contentFiles/x64/Codecs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Pack>true</Pack>
     </None>
-    <None Update="x64\Codecs\Md5.so">
+    <None Include="x64\Codecs\Md5.so" PackagePath="contentFiles/x64/Codecs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Pack>true</Pack>
     </None>
-    <None Update="x64\Codecs\PKImplode.so">
+    <None Include="x64\Codecs\PKImplode.so" PackagePath="contentFiles/x64/Codecs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Pack>true</Pack>
     </None>
-    <None Update="x64\Codecs\Rar.so">
+    <None Include="x64\Codecs\Rar.so" PackagePath="contentFiles/x64/Codecs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Pack>true</Pack>
     </None>
-    <None Update="x64\Codecs\Sha512.so">
+    <None Include="x64\Codecs\Sha512.so" PackagePath="contentFiles/x64/Codecs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Pack>true</Pack>
     </None>
-    <None Update="x64\Codecs\Xxh64.so">
+    <None Include="x64\Codecs\Xxh64.so" PackagePath="contentFiles/x64/Codecs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Pack>true</Pack>
     </None>
-    <None Update="x64\Codecs\Zstd.so">
+    <None Include="x64\Codecs\Zstd.so" PackagePath="contentFiles/x64/Codecs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Pack>true</Pack>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="x86\7z.dll" PackagePath="contentFiles/x86">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Pack>true</Pack>
     </None>
   </ItemGroup>
 </Project>

@@ -13,10 +13,12 @@ namespace SevenZipExtractor
 
         protected Stream BaseStream;
         private bool disposedValue = false;
+        private bool closeInnerStream;
 
-        protected StreamWrapper(Stream baseStream, WeakReference<SevenZipHandle> libHandle): base(libHandle)
+        protected StreamWrapper(Stream baseStream, bool closeInnerStream, WeakReference<SevenZipHandle> libHandle): base(libHandle)
         {
             BaseStream = baseStream;
+            this.closeInnerStream = closeInnerStream;
         }
 
         public virtual int Seek(long offset, uint seekOrigin, ref ulong newPosition)
@@ -30,14 +32,17 @@ namespace SevenZipExtractor
             return HResults.S_OK;
         }
 
-        protected virtual void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
             if (!disposedValue)
             {
                 if (disposing)
                 {
                     // cleanup anything normal
-                    BaseStream.Close();
+                    if (closeInnerStream)
+                    {
+                        BaseStream.Close();
+                    }
                 }
                 disposedValue = true;
             }
@@ -48,7 +53,7 @@ namespace SevenZipExtractor
     internal class InStreamWrapper : StreamWrapper, ISequentialInStream, IInStream
     {
 
-        public InStreamWrapper(Stream baseStream, WeakReference<SevenZipHandle> libHandle) : base(baseStream, libHandle)
+        public InStreamWrapper(Stream baseStream, bool closeInnerStream, WeakReference<SevenZipHandle> libHandle) : base(baseStream, closeInnerStream, libHandle)
         {
         }
 
@@ -78,7 +83,7 @@ namespace SevenZipExtractor
 
     internal class OutStreamWrapper : StreamWrapper, ISequentialOutStream, IOutStream
     {
-        public OutStreamWrapper(Stream baseStream, WeakReference<SevenZipHandle> libHandle) : base(baseStream, libHandle)
+        public OutStreamWrapper(Stream baseStream, bool closeInnerStream, WeakReference<SevenZipHandle> libHandle) : base(baseStream, closeInnerStream, libHandle)
         {
         }
 

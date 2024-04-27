@@ -74,7 +74,7 @@ namespace Benchmark
             using (ArchiveFile archiveFile = new ArchiveFile(handle, ArchiveFileName))
             {
                 Entry entry = archiveFile.Entries.First(x => !x.IsFolder);
-                entry.Extract(Path.Combine(Directory, Path.GetFileName(entry.FileName)));
+                entry.Extract(Path.Combine(Directory, Path.GetFileName(entry.FileName) ?? "Error"));
             }
         }
 
@@ -87,7 +87,7 @@ namespace Benchmark
             using (ArchiveFile archiveFile = new ArchiveFile(handle, ArchiveFileName))
             {
                 Entry entry = archiveFile.Entries.Last(x => !x.IsFolder);
-                entry.Extract(Path.Combine(Directory, Path.GetFileName(entry.FileName)));
+                entry.Extract(Path.Combine(Directory, Path.GetFileName(entry.FileName) ?? "Error"));
             }
         }
 

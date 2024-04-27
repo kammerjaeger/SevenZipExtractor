@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -96,8 +97,13 @@ namespace SevenZipExtractor.LibAdapter
             }
         }
 
-        private SevenZipHandle(string sevenZipLibPath, string extension) {
+        private SevenZipHandle(string sevenZipLibPath, string extension)
+        {
             var dirInfo = new DirectoryInfo(sevenZipLibPath);
+            if (dirInfo.Parent == null)
+            {
+                throw new SevenZipException("Unable to find parent directory of 7z.dll");
+            }
             string libPath = Path.Combine(dirInfo.Parent.FullName, "Codecs");
             Libs = new CompressorLibs(sevenZipLibPath, libPath, extension, new WeakReference<SevenZipHandle>(this));
             currentInstance = this;

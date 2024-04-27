@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace SevenZipExtractor
 {
@@ -14,6 +16,7 @@ namespace SevenZipExtractor
         private readonly IInArchive archive;
         private readonly InStreamWrapper archiveStream;
         private IList<Entry>? entries;
+        private readonly ILogger logger;
 
         public ShadowContainer? Shadow { get; set; }
         private uint refCount { get; set; } = 0;
@@ -23,8 +26,9 @@ namespace SevenZipExtractor
         public string? CurrentArchiveName { get; set; }
         public string? ArchivePath { get; set; }
 
-        public ArchiveFile(SevenZipHandle sevenZipHandle, string archiveFilePath) {
+        public ArchiveFile(SevenZipHandle sevenZipHandle, string archiveFilePath, ILogger? logger = null) {
             this.sevenZipHandle = sevenZipHandle;
+            this.logger = logger ?? NullLogger.Instance;
             if (!File.Exists(archiveFilePath)) {
                 throw new SevenZipException("Archive file not found");
             }
@@ -41,12 +45,13 @@ namespace SevenZipExtractor
             }
 
             this.archive = this.sevenZipHandle!.Libs.CreateInArchive(uuid);
-            this.archiveStream = new InStreamWrapper(File.OpenRead(archiveFilePath), new WeakReference<SevenZipHandle>(sevenZipHandle));
+            this.archiveStream = new InStreamWrapper(File.OpenRead(archiveFilePath), true, new WeakReference<SevenZipHandle>(sevenZipHandle));
             archiveStream.AddRef();
         }
 
-        public ArchiveFile(SevenZipHandle sevenZipHandle, Stream archiveStream, SevenZipFormat? format = null, string? fileName = null) {
+        public ArchiveFile(SevenZipHandle sevenZipHandle, Stream archiveStream, SevenZipFormat? format = null, string? fileName = null, ILogger? logger = null) {
             this.sevenZipHandle = sevenZipHandle;
+            this.logger = logger ?? NullLogger.Instance;
             if (archiveStream == null) {
                 throw new SevenZipException("archiveStream is null");
             }
@@ -66,18 +71,19 @@ namespace SevenZipExtractor
             }
 
             this.archive = this.sevenZipHandle!.Libs.CreateInArchive(uuid);
-            this.archiveStream = new InStreamWrapper(archiveStream, new WeakReference<SevenZipHandle>(sevenZipHandle));
+            this.archiveStream = new InStreamWrapper(archiveStream, false, new WeakReference<SevenZipHandle>(sevenZipHandle));
             this.archiveStream.AddRef();
         }
-        public ArchiveFile(SevenZipHandle sevenZipHandle, Stream archiveStream, Guid uuid, string? fileName = null) {
+        public ArchiveFile(SevenZipHandle sevenZipHandle, Stream archiveStream, Guid uuid, string? fileName = null, ILogger? logger = null) {
             this.sevenZipHandle = sevenZipHandle;
+            this.logger = logger ?? NullLogger.Instance;
             if (archiveStream == null) {
                 throw new SevenZipException("archiveStream is null");
             }
             CurrentArchiveName = fileName;
 
             this.archive = this.sevenZipHandle!.Libs.CreateInArchive(uuid);
-            this.archiveStream = new InStreamWrapper(archiveStream, new WeakReference<SevenZipHandle>(sevenZipHandle));
+            this.archiveStream = new InStreamWrapper(archiveStream, false, new WeakReference<SevenZipHandle>(sevenZipHandle));
             this.archiveStream.AddRef();
         }
 
@@ -124,7 +130,7 @@ namespace SevenZipExtractor
 
                     fileStreams.Add(File.Create(outputPath));
                 }
-                var callback = new ArchiveStreamsCallback(fileStreams, new WeakReference<SevenZipHandle>(sevenZipHandle));
+                var callback = new ArchiveStreamsCallback(fileStreams, new WeakReference<SevenZipHandle>(sevenZipHandle), logger);
                 callback.AddRef();
                 this.archive.Extract(null, uint.MaxValue, 0, callback);
             } finally {
@@ -149,7 +155,6 @@ namespace SevenZipExtractor
                 if (open != HResults.S_OK) {
                     throw new SevenZipException("Unable to open archive");
                 }
-                System.Console.Out.WriteLine("Before get item");
                 uint itemsCount = 0;
                 this.archive.GetNumberOfItems(ref itemsCount);
 
@@ -222,7 +227,7 @@ namespace SevenZipExtractor
 
             Type type = typeof(T);
             bool isNullable = type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
-            Type? underlyingType = isNullable ? Nullable.GetUnderlyingType(type) : type;
+            Type underlyingType = isNullable ? Nullable.GetUnderlyingType(type)! : type;
 
             T? result = (T?)Convert.ChangeType(value.ToString(), underlyingType);
 
@@ -259,7 +264,7 @@ namespace SevenZipExtractor
             return HResults.E_FAIL;
         }
 
-        public int GetStream(string name, out IInStream inStream) {
+        public int GetStream(string name, out IInStream? inStream) {
             inStream = null;
             return HResults.E_FAIL;
         }
